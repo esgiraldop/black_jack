@@ -71,12 +71,12 @@ while play_again:
                 break
 
             player.take_card(deck.deal_one())
-            if check_bust_or_21_player() == True:
+            if check_bust_or_21_player():
                 show_cards(show_all_cards=True)
                 dealer_hits = False
                 break
 
-        if check_lose()==True:
+        if check_lose():
             break # In case player busts. there is the need to check if he lost the game
 
         while dealer_hits:
