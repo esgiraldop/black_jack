@@ -1,0 +1,6 @@
+venv 
+.idea 
+__init__.py
+__pycache__
+.pptx
+/black_jack.pptx
