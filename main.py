@@ -64,7 +64,7 @@ while play_again:
             continue
 
         while player_hits:
-            # Player chooses to hit and another card is dealt, or stay
+            # Player chooses to hit (and another card is dealt), or stay
 
             show_cards(show_all_cards=False)
             if hit_or_stay() == False:
@@ -99,7 +99,8 @@ while play_again:
 
         # Battle between player and dealer
 
-        if dealer_hits:  # This means player either busted or scored a 21 so nothing inside this conditional need to be run
+        if dealer_hits: # This means player or dealer either busted or scored a 21 so nothing inside this conditional
+                            # needs to be run
             if check_push():
                 break
 
