@@ -50,7 +50,7 @@ while play_again:
 
         player.bet_money(int(bet_ammount))
         table.bet_money(int(bet_ammount))
-        show_cards(show_all_cards=False)
+        # show_cards(show_all_cards=False)
 
         # Checking if, upon cards are dealt, any of the players get a bust or a 21
         if check_bust_or_21_player():
