@@ -7,7 +7,7 @@ play_again = True
 while play_again:
     # Game starts from scratch
     deck.shuffle()
-    round = 0
+    round = 1
     game_on = True
 
     while game_on:
@@ -50,75 +50,79 @@ while play_again:
 
         player.bet_money(int(bet_ammount))
         table.bet_money(int(bet_ammount))
-        # show_cards(show_all_cards=False)
 
         # Checking if, upon cards are dealt, any of the players get a bust or a 21
-        if check_bust_or_21_player():
-            if check_lose():
-                break
-            continue
-
-        if check_bust_or_21_dealer():
-            if check_lose():
-                break
-            continue
-
-        while player_hits:
-            # Player chooses to hit (and another card is dealt), or stay
-
-            show_cards(show_all_cards=False)
-            if hit_or_stay() == False:
-                break
-
-            player.take_card(deck.deal_one())
-            if check_bust_or_21_player():
-                show_cards(show_all_cards=True)
+        # To test bust --> player.take_card(Card('Hearts', 'Ace')) --> player.sum_values()
+        if player.sum_values() > 21:
+            # Neither player nor dealer cannot bust in the first two dealt cards
+            # This will never happen if it is not possible the first two dealt cards add up more than 20
+            print('First two dealt cards added up more than 21. Redealing again...')
+            player.receive_money(table.withdraw_money())
+        elif check_21_player():
+            # Player can actually score a 21 in the first two dealt cards, but this will never happen if it is not
+                # possible the first two dealt cards add up more than 20
+            if check_21_dealer():
+                if check_21_dealer():
+                    break
+            elif check_bust_dealer():
+                player_hits = False
                 dealer_hits = False
-                break
+        else: # Game continues
+            while player_hits:
+                # Player chooses to hit (and another card is dealt), or stay
 
-        if check_lose():
-            break # In case player busts. there is the need to check if he lost the game
+                show_cards(show_all_cards=False)
+                if hit_or_stay() == False:
+                    break
 
-        while dealer_hits:
-            # Dealer randomly chooses to hit or stay
-            dealer_hits = [True, False]
-            random.shuffle(dealer_hits)
-            show_cards(show_all_cards=True)
-            if dealer_hits[0] == False:
-                break
-            else:
-                dealer_hits == True
+                player.take_card(deck.deal_one())
+                if check_bust_player():
+                    show_cards(show_all_cards=True)
+                    dealer_hits = False
+                    break
+                elif check_21_player():
+                    show_cards(show_all_cards=True)
+                    break
 
-            dealer.take_card(deck.deal_one())
-            if check_bust_or_21_dealer() == True:
+            if check_lose():
+                break # In case player busts. there is the need to check if he lost the game
+
+            while dealer_hits:
+                # Dealer randomly chooses to hit or stay
+                dealer_hits = [True, False]
+                random.shuffle(dealer_hits)
                 show_cards(show_all_cards=True)
-                dealer_hits = False
-                break
+                if dealer_hits[0] == False:
+                    break
+                else:
+                    dealer_hits == True
 
-        # Dealer can lose a round, but never loses a game because its money is infinite
+                dealer.take_card(deck.deal_one())
+                if check_bust_dealer():
+                    show_cards(show_all_cards=True)
+                    dealer_hits = False
+                    break
+                elif check_21_dealer():
+                    show_cards(show_all_cards=True)
+                    break
 
-        # Battle between player and dealer
+            # Dealer can lose a round, but never loses a game because its money is infinite
 
-        if dealer_hits: # This means player or dealer either busted or scored a 21 so nothing inside this conditional
-                            # needs to be run
-            if check_push():
-                break
+            # Battle between player and dealer
+            if dealer_hits: # This means player or dealer either busted or scored a 21 so nothing inside this conditional
+                                # needs to be run
+                if check_push():
+                    break
+                elif player.sum_values() > dealer.sum_values():
+                    # player wins the round. player earns twice the bet ammount
+                    print('Player wins the round!')
+                    player.receive_money(table.withdraw_money()*2)
+                    table.reinit()
 
-            elif player.sum_values() > dealer.sum_values():
-                # player wins the round. player earns twice the bet ammount
-                print('Player wins the round!')
-                player.receive_money(table.withdraw_money()*2)
-                table.reinit()
-
-            elif player.sum_values() < dealer.sum_values():
-                # dealer wins the round. player loses the bet ammount.
-                print('Player loses the round!')
-                table.reinit() # As the money was already extracted from the bankroll,
-
-            else:
-                # push! which means the round ends in a draw. player is refunded the bet ammount
-                print('Push!')
-                player.receive_money(table.withdraw_money())
+                elif player.sum_values() < dealer.sum_values():
+                    # dealer wins the round. player loses the bet ammount.
+                    print('Player loses the round!')
+                    table.reinit() # As the money was already extracted from the bankroll,
 
         # Before finishing the round, player and dealer return their cards to the deck
 
@@ -136,9 +140,13 @@ while play_again:
         if check_lose():
             break
 
-        if play_again() == False:
+        if play_again_func() == False:
             play_again = False
             break
+
+        # In case game continues
+        deal_two_cards(player)
+        deal_two_cards(dealer)
 
     if play_again == False:
         print('Thanks for playing Black Jack!')

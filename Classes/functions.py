@@ -23,39 +23,69 @@ def check_push():
         table.reinit()
         return True
 
-def check_bust_or_21_player():
-    # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
-    # Returns False if "no bust" occurs
+def deal_two_cards(obj):
+    # Can be used for player or dealer
+    for i in range(2):
+        obj.take_card(deck.deal_one())
+
+def check_bust_player():
+    # returns True if it occurs "bust"
     if player.sum_values() > 21:
-        if check_push(): # Checking push in case the other player has also busted
-            return False
         print('Player busts! Player loses the round!')
         table.reinit()
         return True
 
-    elif player.sum_values() == 21:
-        if check_push(): # Checking push in case the other player has also scored exactly 21
-            return False
+    return False
+
+def check_21_player():
+    # returns True if it occurs "21"
+    if player.sum_values() == 21:
         print('21! Player wins the round!')
-        player.receive_money(table.withdraw_money() * 2) # If player wins the round, receives twice the bet ammount
+        player.receive_money(table.withdraw_money() * 2)  # If player wins the round, receives twice the bet ammount
         table.reinit()
         return True
 
+    return False
+
+def check_bust_or_21_player():
+    # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
+    # Returns False if "no bust" occurs
+    if check_bust_player():
+        return True
+    elif check_21_player():
+        return True
     else:
         return False
+
+def check_bust_dealer():
+    # returns True if it occurs "bust"
+    if dealer.sum_values()> 21:
+        print('Dealer busts! Player wins the round!')
+        player.receive_money(table.withdraw_money() * 2) # If player wins the round, receives twice the bet amount
+        table.reinit()
+        return True
+
+    return False
+
+def check_21_dealer():
+    # returns True if it occurs "21", False if not, or "push" if the result is 21, but the player also scored 21
+    if dealer.sum_values() == 21:
+        if check_push():
+            return 'push'
+        else:
+            print('21! Dealer wins the round!')
+            table.reinit()
+            return True
+
+    return False
 
 def check_bust_or_21_dealer():
     # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
     # Returns False if "no bust" occurs
-    if dealer.sum_values()> 21:
-        print('Dealer busts! Player wins the round!')
-        player.receive_money(table.withdraw_money() * 2) # If player wins the round, receives twice the bet ammount
-        table.reinit()
+    if check_21_dealer():
         return True
 
-    elif dealer.sum_values() == 21:
-        print('21! Dealer wins the round!')
-        table.reinit()
+    elif check_bust_dealer():
         return True
 
     else:
@@ -84,19 +114,18 @@ def hit_or_stay():
 
 
 
-def play_again():
+def play_again_func():
     # returns False if player does not want to play another round and True otherwise
     answer = False
     while answer not in ['y', 'n']:
-
         answer = input("Do you want to play again? (y/n): ")
         if answer not in ['y', 'n']:
             print("Please enter a valid value")
 
     if answer == 'y':
         return True
-    print('Thanks for playing Black Jack 21!')
-    return answer
+
+    return False
 
 def show_cards(show_all_cards):
     # Function to display cards in table. If option = False, displays one card of the dealer only, if True, displays all cards
