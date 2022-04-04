@@ -1,12 +1,6 @@
 from Classes.Classes import *
 
-deck = Deck()
-deck.shuffle()
-table = Table()
-player = Player(deck.deal_two())
-dealer = Dealer(deck.deal_two())
-
-def check_lose():
+def check_lose(player):
     # Returns True if player ran out of funds or False otherwise
 
     if player.bankroll <= 0: # just for checking for error, i will put the '<', but the bankroll should not have negative values
@@ -15,7 +9,7 @@ def check_lose():
 
     return False
 
-def check_push():
+def check_push(player):
     # Checks if both players got the same result
     if player.sum_values() == dealer.sum_values():
         print('Push!')
@@ -23,12 +17,7 @@ def check_push():
         table.reinit()
         return True
 
-def deal_two_cards(obj):
-    # Can be used for player or dealer
-    for i in range(2):
-        obj.take_card(deck.deal_one())
-
-def check_bust_player():
+def check_bust_player(player):
     # returns True if it occurs "bust"
     if player.sum_values() > 21:
         print('Player busts! Player loses the round!')
@@ -37,7 +26,7 @@ def check_bust_player():
 
     return False
 
-def check_21_player():
+def check_21_player(player):
     # returns True if it occurs "21"
     if player.sum_values() == 21:
         print('21! Player wins the round!')
@@ -47,17 +36,17 @@ def check_21_player():
 
     return False
 
-def check_bust_or_21_player():
+def check_bust_or_21_player(player):
     # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
     # Returns False if "no bust" occurs
-    if check_bust_player():
+    if check_bust_player(player):
         return True
-    elif check_21_player():
+    elif check_21_player(playerr):
         return True
     else:
         return False
 
-def check_bust_dealer():
+def check_bust_dealer(dealer):
     # returns True if it occurs "bust"
     if dealer.sum_values()> 21:
         print('Dealer busts! Player wins the round!')
@@ -67,7 +56,7 @@ def check_bust_dealer():
 
     return False
 
-def check_21_dealer():
+def check_21_dealer(dealer):
     # returns True if it occurs "21", False if not, or "push" if the result is 21, but the player also scored 21
     if dealer.sum_values() == 21:
         if check_push():
@@ -79,13 +68,13 @@ def check_21_dealer():
 
     return False
 
-def check_bust_or_21_dealer():
+def check_bust_or_21_dealer(dealer):
     # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
     # Returns False if "no bust" occurs
-    if check_21_dealer():
+    if check_21_dealer(dealer):
         return True
 
-    elif check_bust_dealer():
+    elif check_bust_dealer(dealer):
         return True
 
     else:
@@ -127,7 +116,7 @@ def play_again_func():
 
     return False
 
-def show_cards(show_all_cards):
+def show_cards(show_all_cards, player, dealer):
     # Function to display cards in table. If option = False, displays one card of the dealer only, if True, displays all cards
     print("------------------------")
     print("Player cards on table: ")
@@ -142,3 +131,6 @@ def show_cards(show_all_cards):
         dealer.show_all_cards()
         print("Value of the dealer cards is: ", dealer.sum_values())
     print('\n')
+
+if __name__ == '__main__':
+    pass

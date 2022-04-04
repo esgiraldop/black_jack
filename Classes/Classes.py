@@ -3,19 +3,17 @@ import random
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
 values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
-            'Nine':9, 'Ten':10, 'Jack':10, 'Queen':10, 'King':10, 'Ace':10}
+            'Nine':9, 'Ten':10, 'Jack':10, 'Queen':10, 'King':10, 'Ace':11}
 
 class Card:
 
     def __init__(self,suit,rank):
         self.suit = suit
         self.rank = rank
-        # Treat Ace as 1 or 11?
         self.value = values[rank]
 
     def __str__(self):
         return f'{self.rank} of {self.suit}'
-
 
 class Deck:
 
@@ -35,16 +33,46 @@ class Deck:
     def shuffle(self):
         return random.shuffle(self.all_cards)
 
-    def deal_one(self):
+    def deal_one(self, obj):
         # Method to be used when any of the player selects "hit"
-        return self.all_cards.pop(0)
+        # "obj" can be player or dealer
+        card = self.all_cards.pop(0)
+        if card.rank == 'Ace':
+            card.value = self.ask_ace_value(obj)
 
-    def deal_two(self):
+        return card
+
+    def deal_two(self, obj):
         # Method to be used when dealing two cards for both players at the beginning of the match
         two_cards = []
         for i in range(2):
             two_cards.append(self.all_cards.pop(i))
         return two_cards
+
+    def ask_ace_value(self, obj):
+        # If obj is player, asks to choose 11 or 1 for the value of Ace. If obj is dealer, randomly chooses the value
+            # for ace
+        if obj.name == 'Player':
+            # Player is asked to choose between '1' or '11' for ace
+            value = 0
+            while value not in [1, 11]:
+                try:
+                    value = int(input('Please chose between \'1\' or \'11\' for the value of Ace: '))
+                except:
+                    print('Only numerical integer values can be entered')
+                    value = 0
+                else:
+                    if value not in [1, 11]:
+                        print('Only \'1\' or \'11\' can be entered.')
+                        value = 0
+
+        elif obj.name == 'Dealer':
+            # Dealer randomly chooses between 1 or 11
+            values = [1, 11]
+            random.shuffle(values)
+            value = values[0]
+
+        return value
 
     def take_cards(self, cards):
         if type(cards) == type([]):
@@ -54,10 +82,12 @@ class Deck:
 
 class Dealer:
 
-    def __init__(self,cards):
+    def __init__(self):
+        self.name = 'Dealer'
+
+    def take_two_cards(self, cards):
         # Takes the first two cards from Deck
         self.cards = cards
-        self.name = 'Dealer'
 
     def take_card(self,card):
         # Takes one card from the deck when hits
@@ -82,11 +112,9 @@ class Dealer:
 
 class Player(Dealer): # Inherits all the methods and attributes from Dealer
 
-    def __init__(self,cards):
-        # Takes the first two cards from Deck
-        self.cards = cards
+    def __init__(self):
         self.name = 'Player'
-        # Whn match starts, Player starts with 1000 dolars
+        # When match starts, Player starts with 1000 dollars
         self.bankroll = 1000
 
     def __str__(self):
@@ -118,3 +146,6 @@ class Table():
         money_out = self.bet_ammount
         self.reinit()
         return money_out
+
+if __name__ == '__main__':
+    pass
