@@ -66,7 +66,7 @@ while play_again:
             # This will never happen if it is not possible the first two dealt cards add up more than 20
             print('First two dealt cards added up more than 21. Redealing again...')
             player.receive_money(table.withdraw_money())
-        elif check_21_player(player):
+        elif player.sum_values() == 21:
             # Player can actually score a 21 in the first two dealt cards, but this will never happen if it is not
                 # possible the first two dealt cards add up more than 20
             if check_21_dealer(dealer):
