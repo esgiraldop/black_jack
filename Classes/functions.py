@@ -1,5 +1,38 @@
 from Classes.Classes import *
 
+def ask_4_bet(player):
+    # Returns the amount bet by the player
+    bet_ammount = -1
+
+    while bet_ammount < 0 or bet_ammount > player.bankroll or bet_ammount != int(bet_ammount):
+
+        try:
+            bet_ammount = float(input("How much do you want to bet: "))
+        except:
+            print('Only numerical values can be entered')
+            bet_ammount = -1
+        else:
+            if bet_ammount != int(bet_ammount):
+                print('Only integer values can be entered')
+                continue
+
+            elif bet_ammount < 0:
+                print('Please enter a positive number')
+                continue
+
+            elif bet_ammount > player.bankroll:
+                print('Not enough funds!')
+                print(player)
+                continue
+            print('\n')
+            print(f'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            print(f'$$$$ Player has bet {bet_ammount} dollars $$$$')
+            print(f'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            print('\n')
+
+    return bet_ammount
+
+
 def check_lose(player):
     # Returns True if player ran out of funds or False otherwise
 

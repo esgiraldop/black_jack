@@ -140,6 +140,7 @@ class Table():
         self.bet_ammount = 0
 
     def bet_money(self, bet_ammount):
+        # Money at stake by player
         self.bet_ammount = bet_ammount
 
     def withdraw_money(self):
