@@ -42,6 +42,21 @@ def check_lose(player):
 
     return False
 
+def check_cashOut():
+    # Return True if player cashes out. False otherwise
+    cash_out = 1
+    while cash_out not in ['y', 'n']:
+        cash_out = input('Do you want to cash out? (y/n): ')
+
+        if cash_out not in ['y', 'n']:
+            print('Please enter a valid option.\n')
+
+    if cash_out == 'y':
+        print('Player cashes out.\nHouse wins!')
+        return True
+
+    return False
+
 def check_push(player):
     # Checks if both players got the same result
     if player.sum_values() == dealer.sum_values():
@@ -54,7 +69,7 @@ def check_bust_player(player):
     # returns True if it occurs "bust"
     if player.sum_values() > 21:
         print('Player busts! Player loses the round!')
-        table.reinit()
+        table.reinit() # Player does not recover the bet money
         return True
 
     return False
@@ -149,7 +164,7 @@ def play_again_func():
 
     return False
 
-def show_cards(show_all_cards, player, dealer):
+def show_cards(player, dealer, show_all_cards=False):
     # Function to display cards in table. If option = False, displays one card of the dealer only, if True, displays all cards
     print("------------------------")
     print("Player cards on table: ")

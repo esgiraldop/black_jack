@@ -46,7 +46,10 @@ class Deck:
         # Method to be used when dealing two cards for both players at the beginning of the match
         two_cards = []
         for i in range(2):
-            two_cards.append(self.all_cards.pop(i))
+            card = self.all_cards.pop(0)
+            if card.rank == 'Ace':
+                card.value = self.ask_ace_value(obj)
+            two_cards.append(card)
         return two_cards
 
     def ask_ace_value(self, obj):
