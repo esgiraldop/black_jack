@@ -38,6 +38,7 @@ class Deck:
         # "obj" can be player or dealer
         card = self.all_cards.pop(0)
         if card.rank == 'Ace':
+            print(f'you have received a {card.rank} of {card.suit}')
             card.value = self.ask_ace_value(obj)
 
         return card
@@ -48,6 +49,7 @@ class Deck:
         for i in range(2):
             card = self.all_cards.pop(0)
             if card.rank == 'Ace':
+                print('you have received a ', print(card))
                 card.value = self.ask_ace_value(obj)
             two_cards.append(card)
         return two_cards
@@ -60,7 +62,7 @@ class Deck:
             value = 0
             while value not in [1, 11]:
                 try:
-                    value = int(input('Please chose between \'1\' or \'11\' for the value of Ace: '))
+                    value = int(input('Please choose between \'1\' or \'11\' for the value of the card: '))
                 except:
                     print('Only numerical integer values can be entered')
                     value = 0
@@ -121,23 +123,23 @@ class Player(Dealer): # Inherits all the methods and attributes from Dealer
         self.bankroll = 1000
 
     def __str__(self):
-        return f"Player has {self.bankroll} dolars left"
+        return f"Player has {self.bankroll} dollars left"
 
     def bet_money(self,bet_money):
         self.bankroll = self.bankroll - bet_money
-        print(f"Player has {self.bankroll} dolars left")
+        print(f"Player has {self.bankroll} dollars left")
 
     def receive_money(self, money_in):
         self.bankroll = self.bankroll + money_in
-        print(f"Player has {self.bankroll} dolars left")
+        print(f"Player has {self.bankroll} dollars left")
 
 class Table():
 
     def __init__(self):
-        self.bet_ammount = 0 #Table starts with zero dolars on it
+        self.bet_ammount = 0 #Table starts with zero dollars on it
 
     def __str__(self):
-        return f"Ammount of money in the table: {self.bet_ammount} dolars"
+        return f"Ammount of money in the table: {self.bet_ammount} dollars"
 
     def reinit(self) -> object:
         self.bet_ammount = 0

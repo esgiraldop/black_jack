@@ -33,11 +33,11 @@ def ask_4_bet(player):
     return bet_ammount
 
 
-def check_lose(player):
+def check_player_loses_game(player):
     # Returns True if player ran out of funds or False otherwise
 
     if player.bankroll <= 0: # just for checking for error, i will put the '<', but the bankroll should not have negative values
-        print(f'Player has {player.bankroll} dollars left.Player loses the game')
+        print(f'Player has {player.bankroll} dollars left.\nPlayer loses the game')
         return True
 
     return False
@@ -57,15 +57,33 @@ def check_cashOut():
 
     return False
 
-def check_push(player):
-    # Checks if both players got the same result
+def check_push_round(player, dealer, table):
+    # Returns true if both players got the same result. False otherwise
     if player.sum_values() == dealer.sum_values():
-        print('Push!')
         player.receive_money(table.withdraw_money()) # If there is a push, player takes back the bet ammount
         table.reinit()
         return True
 
-def check_bust_player(player):
+    return False
+
+def check_player_wins_round(player, dealer, table):
+    # Returns true if player wins the round. False otherwise
+    if player.sum_values() > dealer.sum_values():
+        player.receive_money(table.withdraw_money() * 2) # player earns twice the bet money
+        table.reinit()
+        return True
+
+    return False
+
+def check_player_loses_round(player, dealer, table):
+    # Returns true if player loses the round. False otherwise
+    if player.sum_values() < dealer.sum_values():
+        table.reinit() # Player loses the bet money
+        return True
+
+    return False
+
+def check_bust_player(player, table):
     # returns True if it occurs "bust"
     if player.sum_values() > 21:
         print('Player busts! Player loses the round!')
@@ -77,24 +95,12 @@ def check_bust_player(player):
 def check_21_player(player):
     # returns True if it occurs "21"
     if player.sum_values() == 21:
-        print('21! Player wins the round!')
-        player.receive_money(table.withdraw_money() * 2)  # If player wins the round, receives twice the bet ammount
-        table.reinit()
+        print('Player scores a Black Jack!')
         return True
 
     return False
 
-def check_bust_or_21_player(player):
-    # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
-    # Returns False if "no bust" occurs
-    if check_bust_player(player):
-        return True
-    elif check_21_player(playerr):
-        return True
-    else:
-        return False
-
-def check_bust_dealer(dealer):
+def check_bust_dealer(player, dealer, table):
     # returns True if it occurs "bust"
     if dealer.sum_values()> 21:
         print('Dealer busts! Player wins the round!')
@@ -107,26 +113,10 @@ def check_bust_dealer(dealer):
 def check_21_dealer(dealer):
     # returns True if it occurs "21", False if not, or "push" if the result is 21, but the player also scored 21
     if dealer.sum_values() == 21:
-        if check_push():
-            return 'push'
-        else:
-            print('21! Dealer wins the round!')
-            table.reinit()
-            return True
+        print('Dealer scores a Black Jack!')
+        return True
 
     return False
-
-def check_bust_or_21_dealer(dealer):
-    # returns True if it occurs "21" or "bust" (Which are conditions for breaking any while containing this function).
-    # Returns False if "no bust" occurs
-    if check_21_dealer(dealer):
-        return True
-
-    elif check_bust_dealer(dealer):
-        return True
-
-    else:
-        return False
 
 def hit_or_stay():
     # returns True if player or dealer chooses to hit or False if decides to stay (False breaks any outter loop)
@@ -148,8 +138,6 @@ def hit_or_stay():
 
     print('Player stays')
     return False
-
-
 
 def play_again_func():
     # returns False if player does not want to play another round and True otherwise
